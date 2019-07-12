@@ -1,15 +1,48 @@
 # kube playground
 
-This is an experiment with k3s and metallb that runs in Vagrant.
+This is my place to keep things I play with in [k3s](https://k3s.io/) via [MetalLB](https://metallb.universe.tf/). This setup is all designed to be run in Vagrant on a laptop.
 
 - [kube playground](#kube-playground)
   - [Usage](#Usage)
+    - [K3s in Vagrant](#K3s-in-Vagrant)
+    - [K3s and MetalLB](#K3s-and-MetalLB)
+    - [Additional K3s master flags](#Additional-K3s-master-flags)
+    - [Helm & k3s's kube config](#Helm--k3ss-kube-config)
+    - [Helm setup](#Helm-setup)
   - [Doc Links](#Doc-Links)
   - [Sample Apps](#Sample-Apps)
     - [Argo CD](#Argo-CD)
     - [OpenFaaS](#OpenFaaS)
 
 ## Usage
+
+### K3s in Vagrant
+
+K3s needs some extra configuration to work correctly inside of Vagrant. In particular, these settings were required:
+
+- `--node-ip=` needs to be set to the IP of eth1
+- `--flannel-iface=eth1` has to be set so that Flannel will talk over the interface that works without voodoo (Vagrant does special things with the first interface)
+
+### K3s and MetalLB
+
+Since we are using MetalLB as our load balancer we need to pass the master the install flags `--no-deploy=servicelb`
+
+### Additional K3s master flags
+
+And, just because of the way this setup uses k3s, we need a couple of more flags:
+
+- `--no-deploy=traefik` is so that we can choose our own ingress / proxy later
+- `--write-kubeconfig-mode 644` is so that the user `vagrant` can utilize the config laid down by the installer
+
+### Helm & k3s's kube config
+
+K3s ships with a special version of `kubectl` that knows where to find the config laid down by the installer but helm know nothing of this. To make life simpler we make everyone aware of it by default by creating `/etc/profile.d/k3s-kubeconfig.sh` like so:
+
+```bash
+echo "export KUBECONFIG='/etc/rancher/k3s/k3s.yaml'" > /etc/profile.d/k3s-kubeconfig.sh
+```
+
+### Helm setup
 
 Helm is preinstalled but needs to be setup:
 
