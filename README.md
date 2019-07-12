@@ -1,7 +1,7 @@
 # kube playground
 
-This is an experiment with k3s and metallb that runs in Vagrant. 
+This is an experiment with k3s and metallb that runs in Vagrant.
 
-## Known issues
+## Usage
 
-Currently, helm won't install on the master node.
+Helm is preinstalled. Run `helm init` to configure it.

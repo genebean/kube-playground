@@ -14,6 +14,10 @@ $configureMaster=<<-SHELL
   # make sure the kube config is found
   echo "export KUBECONFIG='/etc/rancher/k3s/k3s.yaml'" > /etc/profile.d/k3s-kubeconfig.sh
   source /etc/profile.d/k3s-kubeconfig.sh
+
+  # install helm
+  export PATH=/usr/local/bin:$PATH
+  curl -L https://git.io/get_helm.sh | bash
 SHELL
 
 
