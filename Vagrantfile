@@ -10,6 +10,10 @@ $configureMaster=<<-SHELL
 
   /usr/local/bin/kubectl apply -f https://raw.githubusercontent.com/google/metallb/v0.7.3/manifests/metallb.yaml
   /usr/local/bin/kubectl apply -f /vagrant/metallb-configmap.yml
+
+  # make sure the kube config is found
+  echo "export KUBECONFIG='/etc/rancher/k3s/k3s.yaml'" > /etc/profile.d/k3s-kubeconfig.sh
+  source /etc/profile.d/k3s-kubeconfig.sh
 SHELL
 
 
