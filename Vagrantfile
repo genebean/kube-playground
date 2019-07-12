@@ -18,6 +18,9 @@ $configureMaster=<<-SHELL
   # install helm
   export PATH=/usr/local/bin:$PATH
   curl -L https://git.io/get_helm.sh | bash
+
+  # OpenFaaS uses the shasum program
+  yum install -y perl-Digest-SHA
 SHELL
 
 
