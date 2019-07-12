@@ -1,9 +1,9 @@
 $configureMaster=<<-SHELL
   # Store private network IP address in variable
-  IPADDR=$(ip a show eth0 | grep "inet " | awk '{print $2}' | cut -d / -f1)
+  IPADDR=$(ip a show eth1 | grep "inet " | awk '{print $2}' | cut -d / -f1)
 
   # Deploy k3s, specify private IP as kubelet's IP, disable loadbalancer and traefik
-  curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--no-deploy=servicelb --no-deploy=traefik --node-ip=${IPADDR} --write-kubeconfig-mode 644" sh -
+  curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--no-deploy=servicelb --no-deploy=traefik --node-ip=${IPADDR} --flannel-iface=eth1 --write-kubeconfig-mode 644" sh -
 
   # Place token for agent registration in shared folder
   cp /var/lib/rancher/k3s/server/node-token /vagrant/token
@@ -29,14 +29,14 @@ $configureNode=<<-SHELL
   export K3S_URL=https://192.168.50.11:6443
 
   # Store private network IP address in variable
-  IPADDR=$(ip a show eth0 | grep "inet " | awk '{print $2}' | cut -d / -f1)
+  IPADDR=$(ip a show eth1 | grep "inet " | awk '{print $2}' | cut -d / -f1)
 
-  curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--node-ip=${IPADDR}" sh -
+  curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--node-ip=${IPADDR} --flannel-iface=eth1" sh -
 SHELL
 
 Vagrant.configure("2") do |config|
   config.vm.box = "genebean/centos-7-nocm"
-  node_num=2
+  node_num=3
 
   (1..node_num).each do |i|
     if i == 1 then
