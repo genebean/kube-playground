@@ -4,17 +4,45 @@ This is my place to keep things I play with in [k3s](https://k3s.io/) via [Metal
 
 - [kube playground](#kube-playground)
   - [Usage](#Usage)
+    - [Helm setup](#Helm-setup)
+  - [Build notes](#Build-notes)
     - [K3s in Vagrant](#K3s-in-Vagrant)
     - [K3s and MetalLB](#K3s-and-MetalLB)
     - [Additional K3s master flags](#Additional-K3s-master-flags)
     - [Helm & k3s's kube config](#Helm--k3ss-kube-config)
-    - [Helm setup](#Helm-setup)
   - [Doc Links](#Doc-Links)
   - [Sample Apps](#Sample-Apps)
     - [Argo CD](#Argo-CD)
     - [OpenFaaS](#OpenFaaS)
 
 ## Usage
+
+To get started you just need [Vagrant](https://www.vagrantup.com/) installed. Once you have that run the following:
+
+```bash
+vagrant up
+```
+
+That will spin up a master node and two worker nodes by default. Once they are up you can log into the master like so:
+
+```bash
+vagrant ssh master
+```
+
+### Helm setup
+
+Helm is preinstalled but needs to be setup:
+
+```bash
+kubectl -n kube-system create sa tiller \
+  && kubectl create clusterrolebinding tiller \
+  --clusterrole cluster-admin \
+  --serviceaccount=kube-system:tiller
+
+helm init --skip-refresh --upgrade --service-account tiller
+```
+
+## Build notes
 
 ### K3s in Vagrant
 
@@ -40,19 +68,6 @@ K3s ships with a special version of `kubectl` that knows where to find the confi
 
 ```bash
 echo "export KUBECONFIG='/etc/rancher/k3s/k3s.yaml'" > /etc/profile.d/k3s-kubeconfig.sh
-```
-
-### Helm setup
-
-Helm is preinstalled but needs to be setup:
-
-```bash
-kubectl -n kube-system create sa tiller \
-  && kubectl create clusterrolebinding tiller \
-  --clusterrole cluster-admin \
-  --serviceaccount=kube-system:tiller
-
-helm init --skip-refresh --upgrade --service-account tiller
 ```
 
 ## Doc Links
@@ -129,15 +144,15 @@ kubectl get svc -o wide gateway-external -n openfaas
 cat gateway-password.txt
 ```
 
-Run the following from your local machine
+You can now log into the web interface via http://<OPENFAAS_GATEWAY_EXTERNAL>:8080
+
+You can also run the following from your local machine to use the faas-cli:
 
 ```bash
 export OPENFAAS_PW=<the password displayed above>
 export OPENFAAS_URL=http://<OPENFAAS_GATEWAY_EXTERNAL>:8080 # the get svc command above will show you the address
 echo -n $OPENFAAS_PW | faas-cli login -g $OPENFAAS_URL -u admin --password-stdin
 ```
-
-You can also log into the web interface via http://<OPENFAAS_GATEWAY_EXTERNAL>:8080
 
 OpenFaaS can be removed via these commands if you no longer wish to run it.
 
