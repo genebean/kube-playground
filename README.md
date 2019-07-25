@@ -2,18 +2,18 @@
 
 This is my place to keep things I play with in [k3s](https://k3s.io/) via [MetalLB](https://metallb.universe.tf/). This setup is all designed to be run in Vagrant on a laptop.
 
-- [kube playground](#kube-playground)
-  - [Usage](#Usage)
-    - [Helm setup](#Helm-setup)
-  - [Build notes](#Build-notes)
-    - [K3s in Vagrant](#K3s-in-Vagrant)
-    - [K3s and MetalLB](#K3s-and-MetalLB)
-    - [Additional K3s master flags](#Additional-K3s-master-flags)
-    - [Helm & k3s's kube config](#Helm--k3ss-kube-config)
-  - [Doc Links](#Doc-Links)
-  - [Sample Apps](#Sample-Apps)
-    - [Argo CD](#Argo-CD)
-    - [OpenFaaS](#OpenFaaS)
+- [Usage](#usage)
+  - [Helm setup](#helm-setup)
+- [Build notes](#build-notes)
+  - [K3s in Vagrant](#k3s-in-vagrant)
+  - [K3s and MetalLB](#k3s-and-metallb)
+  - [Additional K3s master flags](#additional-k3s-master-flags)
+  - [Helm & k3s's kube config](#helm--k3ss-kube-config)
+- [Doc Links](#doc-links)
+- [Sample Apps](#sample-apps)
+  - [Argo CD](#argo-cd)
+  - [OpenFaaS](#openfaas)
+  - [Polaris](#polaris)
 
 ## Usage
 
@@ -72,8 +72,9 @@ echo "export KUBECONFIG='/etc/rancher/k3s/k3s.yaml'" > /etc/profile.d/k3s-kubeco
 
 ## Doc Links
 
-- https://argoproj.github.io/argo-cd/getting_started/
-- https://github.com/openfaas/workshop/blob/master/lab1b.md
+- [Argo CD](https://argoproj.github.io/argo-cd/getting_started/)
+- [OpenFaaS](https://github.com/openfaas/workshop/blob/master/lab1b.md)
+- [Polaris](https://github.com/FairwindsOps/polaris)
 
 ## Sample Apps
 
@@ -159,4 +160,19 @@ OpenFaaS can be removed via these commands if you no longer wish to run it.
 ```bash
 helm delete --purge openfaas
 kubectl delete namespace openfaas openfaas-fn
+```
+
+### Polaris
+
+These are the steps used to install Polaris as of 25 July 2019:
+
+```bash
+# Install Polaris
+kubectl apply -f https://github.com/reactiveops/polaris/releases/latest/download/dashboard.yaml
+
+# Switch from ClusterIP to LoadBalancer
+kubectl patch svc polaris-dashboard -n polaris -p '{"spec": {"type": "LoadBalancer"}}'
+
+# Get the address needed to accss Polaris
+kubectl get svc -o wide polaris-dashboard -n polaris
 ```
