@@ -2,18 +2,18 @@
 
 This is my place to keep things I play with in [k3s](https://k3s.io/) via [MetalLB](https://metallb.universe.tf/). This setup is all designed to be run in Vagrant on a laptop.
 
-- [Usage](#usage)
-  - [Helm setup](#helm-setup)
-- [Build notes](#build-notes)
-  - [K3s in Vagrant](#k3s-in-vagrant)
-  - [K3s and MetalLB](#k3s-and-metallb)
-  - [Additional K3s master flags](#additional-k3s-master-flags)
-  - [Helm & k3s's kube config](#helm--k3ss-kube-config)
-- [Doc Links](#doc-links)
-- [Sample Apps](#sample-apps)
-  - [Argo CD](#argo-cd)
-  - [OpenFaaS](#openfaas)
-  - [Polaris](#polaris)
+- [kube playground](#kube-playground)
+  - [Usage](#usage)
+    - [Helm setup](#helm-setup)
+  - [Build notes](#build-notes)
+    - [K3s in Vagrant](#k3s-in-vagrant)
+    - [K3s and MetalLB](#k3s-and-metallb)
+    - [Additional K3s master flags](#additional-k3s-master-flags)
+    - [Helm & k3s's kube config](#helm--k3ss-kube-config)
+  - [Sample Apps](#sample-apps)
+    - [Argo CD](#argo-cd)
+    - [OpenFaaS](#openfaas)
+    - [Polaris](#polaris)
 
 ## Usage
 
@@ -70,17 +70,13 @@ K3s ships with a special version of `kubectl` that knows where to find the confi
 echo "export KUBECONFIG='/etc/rancher/k3s/k3s.yaml'" > /etc/profile.d/k3s-kubeconfig.sh
 ```
 
-## Doc Links
-
-- [Argo CD](https://argoproj.github.io/argo-cd/getting_started/)
-- [OpenFaaS](https://github.com/openfaas/workshop/blob/master/lab1b.md)
-- [Polaris](https://github.com/FairwindsOps/polaris)
-
 ## Sample Apps
 
 ### Argo CD
 
-These are the steps used to install Argo CD as of 12 July 2019:
+Docs used: https://argoproj.github.io/argo-cd/getting_started/
+
+Installation process as of 12 July 2019:
 
 ```bash
 kubectl create namespace argocd
@@ -109,7 +105,11 @@ You can also visit the web interface via http://<ARGOCD_SERVER>
 
 ### OpenFaaS
 
-These are the steps used to install OpenFaaS as of 12 July 2019 (be sure you have run the Helm install above):
+Docs used: https://github.com/openfaas/workshop/blob/master/lab1b.md
+
+Installation process as of 12 July 2019:
+
+First, be sure you have run the Helm install above.
 
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/openfaas/faas-netes/master/namespaces.yml
@@ -164,7 +164,9 @@ kubectl delete namespace openfaas openfaas-fn
 
 ### Polaris
 
-These are the steps used to install Polaris as of 25 July 2019:
+Docs used: https://github.com/FairwindsOps/polaris
+
+Installation process as of 25 July 2019:
 
 ```bash
 # Install Polaris
