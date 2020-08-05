@@ -19,6 +19,11 @@ Vagrant.configure("2") do |config|
       if i == 1 then
         # For Master
         s.vm.provision "shell", inline:<<-SHELL
+          set -e
+
+          # these two are needed to install k3s
+          yum install -y container-selinux selinux-policy-base https://rpm.rancher.io/k3s-selinux-0.1.1-rc1.el7.noarch.rpm
+
           # Store private network IP address in variable
           IPADDR=$(ip a show eth1 | grep "inet " | awk '{print $2}' | cut -d / -f1)
         
@@ -28,7 +33,9 @@ Vagrant.configure("2") do |config|
           # Place token for agent registration in shared folder
           cp /var/lib/rancher/k3s/server/node-token /vagrant/token
         
-          /usr/local/bin/kubectl apply -f https://raw.githubusercontent.com/google/metallb/v0.7.3/manifests/metallb.yaml
+          /usr/local/bin/kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.3/manifests/namespace.yaml
+          /usr/local/bin/kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.3/manifests/metallb.yaml
+          /usr/local/bin/kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)"
           /usr/local/bin/kubectl apply -f /vagrant/metallb-configmap.yml
         
           # make sure the kube config is found
@@ -37,7 +44,7 @@ Vagrant.configure("2") do |config|
         
           # install helm
           export PATH=/usr/local/bin:$PATH
-          curl -L https://git.io/get_helm.sh | bash
+          curl -sSL https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
         
           # OpenFaaS uses the shasum program
           yum install -y perl-Digest-SHA
@@ -45,6 +52,11 @@ Vagrant.configure("2") do |config|
       else
         # For Nodes
         s.vm.provision "shell", inline:<<-SHELL
+          set -e
+
+          # these two are needed to install k3s
+          yum install -y container-selinux selinux-policy-base https://rpm.rancher.io/k3s-selinux-0.1.1-rc1.el7.noarch.rpm
+
           export K3S_TOKEN=$(cat /vagrant/token)
           export K3S_URL=https://192.168.50.11:6443
         

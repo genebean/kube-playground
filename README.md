@@ -2,18 +2,17 @@
 
 This is my place to keep things I play with in [k3s](https://k3s.io/) via [MetalLB](https://metallb.universe.tf/). This setup is all designed to be run in Vagrant on a laptop.
 
-- [kube playground](#kube-playground)
-  - [Usage](#usage)
-    - [Helm setup](#helm-setup)
-  - [Build notes](#build-notes)
-    - [K3s in Vagrant](#k3s-in-vagrant)
-    - [K3s and MetalLB](#k3s-and-metallb)
-    - [Additional K3s master flags](#additional-k3s-master-flags)
-    - [Helm & k3s's kube config](#helm--k3ss-kube-config)
-  - [Sample Apps](#sample-apps)
-    - [Argo CD](#argo-cd)
-    - [OpenFaaS](#openfaas)
-    - [Polaris](#polaris)
+- [Usage](#usage)
+  - [Helm setup](#helm-setup)
+- [Build notes](#build-notes)
+  - [K3s in Vagrant](#k3s-in-vagrant)
+  - [K3s and MetalLB](#k3s-and-metallb)
+  - [Additional K3s master flags](#additional-k3s-master-flags)
+  - [Helm & k3s's kube config](#helm--k3ss-kube-config)
+- [Sample Apps](#sample-apps)
+  - [Argo CD](#argo-cd)
+  - [OpenFaaS](#openfaas)
+  - [Polaris](#polaris)
 
 ## Usage
 
@@ -31,16 +30,7 @@ vagrant ssh master
 
 ### Helm setup
 
-Helm is preinstalled but needs to be setup:
-
-```bash
-kubectl -n kube-system create sa tiller \
-  && kubectl create clusterrolebinding tiller \
-  --clusterrole cluster-admin \
-  --serviceaccount=kube-system:tiller
-
-helm init --skip-refresh --upgrade --service-account tiller
-```
+Helm 3 is preinstalled. Unlike Helm 2, no setup is required.
 
 ## Build notes
 
